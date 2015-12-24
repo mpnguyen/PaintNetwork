@@ -13,7 +13,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Vertical" Margin="5,5,5,5" VerticalAlignment="Bottom">
                 <Image Grid.Column="1" Source="../Resource/btnUser.png" Margin="5,5,5,0"/>
-                <TextBlock Text="MPNGU" TextAlignment="Center" FontSize="8"/>
+                <TextBlock x:Name="TxtName" Text="MPNGU" TextAlignment="Center" FontSize="8"/>
             </StackPanel>
 
             <Grid Grid.Column="1">

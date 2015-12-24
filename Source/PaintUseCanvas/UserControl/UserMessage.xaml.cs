@@ -30,5 +30,9 @@ namespace PaintUseCanvas
         {
             TxtMessage.Text = text;
         }
+        public void SetName(string name)
+        {
+            TxtName.Text = Name;
+        }
     }
 }

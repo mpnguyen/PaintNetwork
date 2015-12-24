@@ -104,14 +104,7 @@ namespace ServerPaint
                     default:
                         break;
                 }
-
-                foreach (var client in listSocketClient)
-                {
-                    NetworkStream s = new NetworkStream(client.client);
-                    StreamWriter serverWrite = new StreamWriter(s);
-                    serverWrite.AutoFlush = true;
-                    serverWrite.WriteLine(name);
-                }
+                
             }
         }
 
@@ -121,11 +114,14 @@ namespace ServerPaint
             {
                 if (room.name == name)
                 {
-                    SendMessage("", client);
+                    SendMessage("fail", client);
+                    return;
                 }
             }
             Room newRoom = new Room() { host = client, name = name, member = new List<ClientInfo>()};
             newRoom.member.Add(client);
+            roomList.Add(newRoom);
+            SendMessage("Server: Success", client);
         }
 
         public static void JoinRoom(string name, ClientInfo client)
@@ -133,10 +129,10 @@ namespace ServerPaint
             foreach (var room in roomList.Where(room => room.name == name))
             {
                 room.member.Add(client);
-                SendMessage("", client);
+                SendMessage("Server: Success", client);
                 return;
             }
-            SendMessage("", client);
+            SendMessage("Server: fail", client);
         }
 
         public static void LeaveRoom(string name, ClientInfo client)

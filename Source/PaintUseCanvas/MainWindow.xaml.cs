@@ -1172,7 +1172,7 @@ namespace PaintUseCanvas
         {
             while (true)
             {
-                string nameClient = network.ClientRecieve();
+                //string nameClient = network.ClientRecieve();
                 string data = network.ClientRecieve();
 
                 this.Dispatcher.BeginInvoke((ThreadStart)delegate()
@@ -1187,9 +1187,10 @@ namespace PaintUseCanvas
         }
         private void Send_OnClick(object sender, RoutedEventArgs e)
         {
-            network.ClientSend("CH||" + TxtMessage.Text);
+            network.ClientSend(TxtMessage.Text);
             var message = new UserMessage();
             message.SetMessage(TxtMessage.Text);
+            message.SetName(TxtUsername.Text);
             ListMessage.Items.Add(message);
             ListMessage.ScrollIntoView(ListMessage.Items[ListMessage.Items.Count - 1]);
             TxtMessage.Text = "";
