@@ -124,7 +124,7 @@ namespace ServerPaint
             roomList.Add(newRoom);
             SendMessage("Server: Success", client);
             string json = CreateListRoom(roomList);
-            BroadCast("LR||" + json, listSocketClient, client);
+            BroadCast("RL||" + json, listSocketClient, client);
             var listJson = JsonConvert.DeserializeObject<List<RoomData>>(json);
         }
 

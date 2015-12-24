@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml;
+using Newtonsoft.Json;
 using PaintUseCanvas.Pages;
 using PaintUseCanvas.UserControl;
 using Application = System.Windows.Application;
@@ -50,6 +51,8 @@ namespace PaintUseCanvas
             AddText
         }
 
+        private List<ClientData> _listClient = new List<ClientData>();
+        private List<RoomData> _listRoom = new List<RoomData>();
         private Network network = new Network();
         private ModeDraw _modeDraw = ModeDraw.Draw;
         private readonly MyShape _myShape = new MyShape();
@@ -1176,15 +1179,47 @@ namespace PaintUseCanvas
                 //string nameClient = network.ClientRecieve();
                 string data = network.ClientRecieve();
 
-                this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+                var path = data.Split(new string[] {"||"}, StringSplitOptions.None);
+                switch (path[0])
                 {
-                    var message = new OtherMessage();
-                    message.SetMessage(data);
-                    message.Focus();
-                    ListMessage.Items.Add(message);
-                    ListMessage.ScrollIntoView(ListMessage.Items[ListMessage.Items.Count - 1]);
-                });
+                    case "CH":
+                        ChatMessage(path[1], path[2]);
+                        break;
+                    case "RL":
+                        GetRoomList(path[1]);
+                        break;
+                    case "CL":
+                        GetClientList(path[1]);
+
+                        break;
+                }
+
+                
             }
+        }
+
+        private void GetClientList(string data)
+        {
+            _listClient = JsonConvert.DeserializeObject<List<ClientData>>(data);
+            
+        }
+
+        void GetRoomList(string data)
+        {
+            _listRoom = JsonConvert.DeserializeObject<List<RoomData>>(data);   
+        }
+        
+        void ChatMessage(string name, string text)
+        {
+            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+                var message = new OtherMessage();
+                message.SetMessage(text);
+                message.SetName(name);
+                message.Focus();
+                ListMessage.Items.Add(message);
+                ListMessage.ScrollIntoView(ListMessage.Items[ListMessage.Items.Count - 1]);
+            });
         }
         private void Send_OnClick(object sender, RoutedEventArgs e)
         {
@@ -1226,8 +1261,14 @@ namespace PaintUseCanvas
 
         private void BtnJoin_OnClick(object sender, RoutedEventArgs e)
         {
-            var roomDialog = new RoomDialog();
+            var roomDialog = new RoomDialog(_listRoom);
+            roomDialog.CreateRoom += CreateRoom;
             roomDialog.ShowDialog();
+        }
+
+        private void CreateRoom(string txtName)
+        {
+            network.ClientSend("CR||" + txtName);
         }
     }
 }
