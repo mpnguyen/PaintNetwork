@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ServerPaint
 {
@@ -95,7 +96,7 @@ namespace ServerPaint
                                 {
                                     if (clientInfo == clientSoc)
                                     {
-                                        BroadCast(msgPart[1], room.member, clientSoc);
+                                        BroadCast("CH||" + msgPart[1], room.member, clientSoc);
                                     }
                                 }
                             }
@@ -122,6 +123,9 @@ namespace ServerPaint
             newRoom.member.Add(client);
             roomList.Add(newRoom);
             SendMessage("Server: Success", client);
+            string json = CreateListRoom(roomList);
+            BroadCast("LR||" + json, listSocketClient, client);
+            var listJson = JsonConvert.DeserializeObject<List<RoomData>>(json);
         }
 
         public static void JoinRoom(string name, ClientInfo client)
@@ -167,5 +171,26 @@ namespace ServerPaint
                 }
             }
         }
+
+        public static string CreateListRoom(List<Room> roomList)
+        {
+            List<RoomData> result = new List<RoomData>();
+            foreach (var room in roomList)
+            {
+                result.Add(room.ToDataRoom());
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public static string CreateListClient(List<ClientInfo> clientList)
+        {
+            List<ClientData> result = new List<ClientData>();
+            foreach (var clientInfo in clientList)
+            {
+                result.Add(clientInfo.ToClientData());
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
     }
 }
