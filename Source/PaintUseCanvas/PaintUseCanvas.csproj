@@ -62,8 +62,14 @@
     </ApplicationDefinition>
     <Compile Include="AnchorPoint.cs" />
     <Compile Include="MyTextBox.cs" />
+    <Compile Include="Pages\RoomDialog.xaml.cs">
+      <DependentUpon>RoomDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControl\OtherMessage.xaml.cs">
       <DependentUpon>OtherMessage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\UCRoom.xaml.cs">
+      <DependentUpon>UCRoom.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControl\UserMessage.xaml.cs">
       <DependentUpon>UserMessage.xaml</DependentUpon>
@@ -80,7 +86,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\RoomDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControl\OtherMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl\UCRoom.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -214,6 +228,10 @@
   <ItemGroup>
     <Resource Include="Resource\btnOther.png" />
     <Resource Include="Resource\btnUser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resource\icoAdmin.png" />
+    <Resource Include="Resource\icoRoom.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

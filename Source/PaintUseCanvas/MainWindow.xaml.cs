@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml;
+using PaintUseCanvas.Pages;
 using PaintUseCanvas.UserControl;
 using Application = System.Windows.Application;
 using Cursors = System.Windows.Input.Cursors;
@@ -1221,6 +1222,12 @@ namespace PaintUseCanvas
                     textBox.Text = "Type for message ...!";
                 }
             }
+        }
+
+        private void BtnJoin_OnClick(object sender, RoutedEventArgs e)
+        {
+            var roomDialog = new RoomDialog();
+            roomDialog.ShowDialog();
         }
     }
 }
