@@ -124,7 +124,7 @@ namespace ServerPaint
                     SendMessage("", client);
                 }
             }
-            Room newRoom = new Room() { host = client, name = name };
+            Room newRoom = new Room() { host = client, name = name, member = new List<ClientInfo>()};
             newRoom.member.Add(client);
         }
 

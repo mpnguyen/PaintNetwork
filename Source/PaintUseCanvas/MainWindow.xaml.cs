@@ -388,43 +388,43 @@ namespace PaintUseCanvas
 
         private void Dash_OnSelected(object sender, RoutedEventArgs e)
         {
-            _myShape.DashArray = new DoubleCollection {4, 1};
+            _myShape.DashArray = new DoubleCollection { 4, 1 };
             if (_isSelected && _modeDraw == ModeDraw.Select)
             {
                 var shape = _selectedElement as Shape;
                 if (shape == null) return;
-                shape.StrokeDashArray = new DoubleCollection {4, 1};
+                shape.StrokeDashArray = new DoubleCollection { 4, 1 };
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
 
         private void Dot_OnSelected(object sender, RoutedEventArgs e)
         {
-            _myShape.DashArray = new DoubleCollection {1};
+            _myShape.DashArray = new DoubleCollection { 1 };
             if (!_isSelected || _modeDraw != ModeDraw.Select) return;
             var shape = _selectedElement as Shape;
             if (shape == null) return;
-            shape.StrokeDashArray = new DoubleCollection {1};
+            shape.StrokeDashArray = new DoubleCollection { 1 };
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
         private void DashDot_OnSelected(object sender, RoutedEventArgs e)
         {
-            _myShape.DashArray = new DoubleCollection {4, 1, 1, 1};
+            _myShape.DashArray = new DoubleCollection { 4, 1, 1, 1 };
             if (!_isSelected || _modeDraw != ModeDraw.Select) return;
             var shape = _selectedElement as Shape;
             if (shape == null) return;
-            shape.StrokeDashArray = new DoubleCollection {4, 1, 1, 1};
+            shape.StrokeDashArray = new DoubleCollection { 4, 1, 1, 1 };
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
         private void DashDotDot_OnSelected(object sender, RoutedEventArgs e)
         {
-            _myShape.DashArray = new DoubleCollection {4, 1, 1, 1, 1, 1};
+            _myShape.DashArray = new DoubleCollection { 4, 1, 1, 1, 1, 1 };
             if (!_isSelected || _modeDraw != ModeDraw.Select) return;
             var shape = _selectedElement as Shape;
             if (shape == null) return;
-            shape.StrokeDashArray = new DoubleCollection {4, 1, 1, 1, 1, 1};
+            shape.StrokeDashArray = new DoubleCollection { 4, 1, 1, 1, 1, 1 };
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -448,10 +448,10 @@ namespace PaintUseCanvas
             var textBox = _selectedElement as TextBox;
             if (textBox != null)
             {
-                var parent = (FrameworkElement) textBox.Parent;
-                while (parent != null && parent is IInputElement && !((IInputElement) parent).Focusable)
+                var parent = (FrameworkElement)textBox.Parent;
+                while (parent != null && parent is IInputElement && !((IInputElement)parent).Focusable)
                 {
-                    parent = (FrameworkElement) parent.Parent;
+                    parent = (FrameworkElement)parent.Parent;
                 }
 
                 var scope = FocusManager.GetFocusScope(textBox);
@@ -554,7 +554,7 @@ namespace PaintUseCanvas
             MyCanvas.Children.Clear();
             _selectedElement = null;
             _clipboardElement = null;
-            var image = new Image {Source = new BitmapImage(new Uri(openFileDialog.FileName))};
+            var image = new Image { Source = new BitmapImage(new Uri(openFileDialog.FileName)) };
             var rectImage = new Rectangle
             {
                 Fill = new ImageBrush(image.Source),
@@ -622,8 +622,8 @@ namespace PaintUseCanvas
 
             var renderBitmap =
                 new RenderTargetBitmap(
-                    (int) size.Width,
-                    (int) size.Height,
+                    (int)size.Width,
+                    (int)size.Height,
                     96d,
                     96d,
                     PixelFormats.Pbgra32);
@@ -682,7 +682,7 @@ namespace PaintUseCanvas
             }
             var shape = _clipboardElement;
             var saved = XamlWriter.Save(shape);
-            var newShape = (UIElement) XamlReader.Load(XmlReader.Create(new StringReader(saved)));
+            var newShape = (UIElement)XamlReader.Load(XmlReader.Create(new StringReader(saved)));
             Canvas.SetTop(newShape, Canvas.GetTop(shape) + 30);
             Canvas.SetLeft(newShape, Canvas.GetLeft(shape) + 30);
             MyCanvas.Children.Add(newShape);
@@ -800,7 +800,7 @@ namespace PaintUseCanvas
                 textBox.Foreground = BtnColorText.Foreground;
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
-            _myTextBox.Color = (SolidColorBrush) BtnColorText.Foreground;
+            _myTextBox.Color = (SolidColorBrush)BtnColorText.Foreground;
         }
 
         //Choose background textbox
@@ -840,8 +840,8 @@ namespace PaintUseCanvas
                     shape.Fill.RelativeTransform = new RotateTransform(transform.Angle + 90, 0.5, 0.5);
                 }
 
-                var newtop = Canvas.GetTop(shape) + (shape.Height - shape.Width)/2;
-                var newleft = Canvas.GetLeft(shape) + (shape.Width - shape.Height)/2;
+                var newtop = Canvas.GetTop(shape) + (shape.Height - shape.Width) / 2;
+                var newleft = Canvas.GetLeft(shape) + (shape.Width - shape.Height) / 2;
                 var temp = shape.Height;
                 shape.Height = shape.Width;
                 shape.Width = temp;
@@ -867,8 +867,8 @@ namespace PaintUseCanvas
                     shape.Fill.RelativeTransform = new RotateTransform(transform.Angle - 90, 0.5, 0.5);
                 }
 
-                var newtop = Canvas.GetTop(shape) + (shape.Height - shape.Width)/2;
-                var newleft = Canvas.GetLeft(shape) + (shape.Width - shape.Height)/2;
+                var newtop = Canvas.GetTop(shape) + (shape.Height - shape.Width) / 2;
+                var newleft = Canvas.GetLeft(shape) + (shape.Width - shape.Height) / 2;
                 var temp = shape.Height;
                 shape.Height = shape.Width;
                 shape.Width = temp;
@@ -893,7 +893,7 @@ namespace PaintUseCanvas
 
             var xmlReader = XmlReader.Create(stringReader, new XmlReaderSettings());
 
-            return (UIElement) XamlReader.Load(xmlReader);
+            return (UIElement)XamlReader.Load(xmlReader);
         }
 
         //Undo
@@ -1024,7 +1024,7 @@ namespace PaintUseCanvas
             var result = openFileDialog.ShowDialog();
             if (result != true) return;
             shape.Stroke = null;
-            var image = new Image {Source = new BitmapImage(new Uri(openFileDialog.FileName))};
+            var image = new Image { Source = new BitmapImage(new Uri(openFileDialog.FileName)) };
             shape.Fill = new ImageBrush(image.Source);
 
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
@@ -1122,7 +1122,7 @@ namespace PaintUseCanvas
             if (result != true) return;
             _selectedElement = null;
             _clipboardElement = null;
-            var image = new Image {Source = new BitmapImage(new Uri(openFileDialog.FileName))};
+            var image = new Image { Source = new BitmapImage(new Uri(openFileDialog.FileName)) };
             var rectImage = new Rectangle
             {
                 Fill = new ImageBrush(image.Source),
@@ -1177,29 +1177,21 @@ namespace PaintUseCanvas
 
                 this.Dispatcher.BeginInvoke((ThreadStart)delegate()
                 {
-                    var second = DateTime.Now.Second;
-                    if (second%2 == 0)
-                    {
-                        var message = new UserMessage();
-                        message.SetMessage(data);
-                        message.Focus();
-                        ListMessage.Items.Add(message);
-                        
-                    }
-                    else
-                    {
-                        var message = new OtherMessage();
-                        message.SetMessage(data);
-                        message.Focus();
-                        ListMessage.Items.Add(message);
-                    }
+                    var message = new OtherMessage();
+                    message.SetMessage(data);
+                    message.Focus();
+                    ListMessage.Items.Add(message);
                     ListMessage.ScrollIntoView(ListMessage.Items[ListMessage.Items.Count - 1]);
                 });
             }
         }
         private void Send_OnClick(object sender, RoutedEventArgs e)
         {
-            network.ClientSend(TxtMessage.Text);
+            network.ClientSend("CH||" + TxtMessage.Text);
+            var message = new UserMessage();
+            message.SetMessage(TxtMessage.Text);
+            ListMessage.Items.Add(message);
+            ListMessage.ScrollIntoView(ListMessage.Items[ListMessage.Items.Count - 1]);
             TxtMessage.Text = "";
         }
 
