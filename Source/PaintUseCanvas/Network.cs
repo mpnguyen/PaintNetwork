@@ -17,10 +17,12 @@ namespace PaintUseCanvas
         {
             // string host = LOCALHOST;
 
-            client = new TcpClient();
-            client.Connect("127.0.0.1", PORT);
-
-            if (client == null)
+            try
+            {
+                client = new TcpClient();
+                client.Connect("127.0.0.1", PORT);
+            }
+            catch (Exception)
             {
                 return false;
             }

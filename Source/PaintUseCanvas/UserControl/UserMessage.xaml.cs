@@ -18,11 +18,17 @@ namespace PaintUseCanvas
     /// <summary>
     /// Interaction logic for UserMessage.xaml
     /// </summary>
-    public partial class UserMessage : UserControl
+    public partial class UserMessage : System.Windows.Controls.UserControl
     {
         public UserMessage()
         {
             InitializeComponent();
+            TxtDateTime.Text = DateTime.Now.ToString();
+        }
+
+        public void SetMessage(string text)
+        {
+            TxtMessage.Text = text;
         }
     }
 }

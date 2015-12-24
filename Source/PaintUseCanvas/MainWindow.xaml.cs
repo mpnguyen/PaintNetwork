@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml;
+using PaintUseCanvas.UserControl;
 using Application = System.Windows.Application;
 using Cursors = System.Windows.Input.Cursors;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -1155,6 +1156,9 @@ namespace PaintUseCanvas
                 else
                 {
                     MessageBox.Show("Connect fail!");
+                    TxtUsername.IsReadOnly = false;
+                    BtnConnect.Label = "Connect";
+                    BtnConnect.IsChecked = false;
                 }
             }
             else
@@ -1173,16 +1177,57 @@ namespace PaintUseCanvas
 
                 this.Dispatcher.BeginInvoke((ThreadStart)delegate()
                 {
-                    ListMessage.Items.Add(new TextBlock() { Text = nameClient });
-                    ListMessage.Items.Add(new TextBlock() { Text = data });
+                    var second = DateTime.Now.Second;
+                    if (second%2 == 0)
+                    {
+                        var message = new UserMessage();
+                        message.SetMessage(data);
+                        message.Focus();
+                        ListMessage.Items.Add(message);
+                        
+                    }
+                    else
+                    {
+                        var message = new OtherMessage();
+                        message.SetMessage(data);
+                        message.Focus();
+                        ListMessage.Items.Add(message);
+                    }
+                    ListMessage.ScrollIntoView(ListMessage.Items[ListMessage.Items.Count - 1]);
                 });
-
             }
         }
         private void Send_OnClick(object sender, RoutedEventArgs e)
         {
             network.ClientSend(TxtMessage.Text);
             TxtMessage.Text = "";
+        }
+
+        private void TxtMessage_OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                if (Equals(textBox.Foreground, Brushes.Gray))
+                {
+                    //Remove hint text and set color
+                    textBox.Text = "";
+                    textBox.Foreground = Brushes.Black;
+                }
+            }
+        }
+        private void TxtMessage_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                if (textBox.Text.Trim().Equals(""))
+                {
+                    //Add hint text
+                    textBox.Foreground = Brushes.Gray;
+                    textBox.Text = "Type for message ...!";
+                }
+            }
         }
     }
 }

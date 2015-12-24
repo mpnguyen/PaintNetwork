@@ -198,7 +198,7 @@
                         </RibbonToggleButton.CheckedBackground>
                     </RibbonToggleButton>
                     <TextBlock Text="Please enter your name:" Margin="5"/>
-                    <RibbonTextBox x:Name="TxtUsername" Label="Name"/>
+                    <RibbonTextBox x:Name="TxtUsername" Label="Name" MaxLength="5"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Text">
@@ -284,7 +284,7 @@
                     VerticalAlignment="Top"/>
                 </Grid>
             </ScrollViewer>
-            <Grid Grid.Column="1" Width="250">
+            <Grid Grid.Column="1" Width="265">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="2*"/>
@@ -321,18 +321,15 @@
                         <Label Grid.Column="1"  Height="30" Content="Room mới tạo" Foreground="AntiqueWhite" Margin="5,0,0,0"/>
                         <Button Grid.Column="2" Content="Join room" Background="#FF2980B9" Foreground="AntiqueWhite"  BorderBrush="#FF0E476C"/>
                     </Grid>
-                    <ListBox x:Name="ListMessage" Grid.Row="1" BorderBrush="#FF2980B9">
-                        <!--<TextBlock Text="please join room for chatting..." FontStyle="Italic" 
-                                   Foreground="DimGray" FontSize="15" TextWrapping="Wrap" Width="240"/>-->    
-                        <paintUseCanvas:UserMessage Height="50" Width="240"/>
-                    </ListBox>
+                    <ListBox x:Name="ListMessage" Grid.Row="1" BorderBrush="#FF2980B9" Background="#FFEDEEF1"/>
                     <Grid Grid.Row="2" Height="40">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="TxtMessage" Grid.Column="0" BorderBrush="#FF2980B9" FontSize="16" 
-                                    TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                                 TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
+                                 GotFocus="TxtMessage_OnGotFocus" LostFocus="TxtMessage_OnLostFocus"/>
                         <Button Content="Send" Grid.Column="1" Foreground="AliceBlue" Click="Send_OnClick">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
