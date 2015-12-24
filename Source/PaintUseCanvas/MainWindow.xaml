@@ -1,0 +1,364 @@
+﻿<RibbonWindow x:Name="MainWin" x:Class= "PaintUseCanvas.MainWindow "
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="MyPaint" Height="650" Width="1200"
+        KeyUp="MainWindow_OnKeyUp"
+        KeyDown="MainWindow_OnKeyDown"
+        Loaded="MainWindow_OnLoaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <Ribbon x:Name="RibbonWin"  SelectedIndex="0">
+            <Ribbon.QuickAccessToolBar>
+                <RibbonQuickAccessToolBar>
+                    <RibbonButton x:Name ="New" SmallImageSource="Resource/btnNew.png" Click="BtnNew_OnClick"/>
+                    <RibbonButton x:Name ="Save" SmallImageSource="Resource/btnSave.png" Click="BtnSave_OnClick"/>
+                    <RibbonButton x:Name ="Open" SmallImageSource="Resource/btnOpen.png" Click="BtnOpen_OnClick"/>
+                    <RibbonButton x:Name ="Undo" SmallImageSource="Resource/btnUndo.png" Click="Undo_OnClick"/>
+                    <RibbonButton x:Name ="Redo" SmallImageSource="Resource/btnRedo.png" Click="Redo_OnClick"/>
+                </RibbonQuickAccessToolBar>
+            </Ribbon.QuickAccessToolBar>
+
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu SmallImageSource="Resource/iconMenu.png">
+                    <RibbonApplicationMenuItem x:Name="BtnNew" Header="New" ImageSource="Resource/btnNew.png" Click="BtnNew_OnClick"/>
+                    <RibbonApplicationMenuItem x:Name="BtnOpen" Header="Open" ImageSource="Resource/btnOpen.png" Click="BtnOpen_OnClick"/>
+                    <RibbonApplicationMenuItem x:Name="BtnSave" Header="Save" ImageSource="Resource/btnSave.png" Click="BtnSave_OnClick"/>
+                    <RibbonApplicationMenuItem x:Name="BtnExit" Header="Exit" ImageSource="Resource/btnExit.png" Click="BtnExit_OnClick"/>
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+
+            <RibbonTab Header="Home" KeyTip="H" >
+                <RibbonGroup x:Name="ClipboardGroup" Header="Clipboard">
+                    <RibbonRadioButton x:Name="BtnSelect" GroupName="modeDraw" 
+                                       LargeImageSource="Resource\btnClick.png" 
+                                       Label="Select" KeyTip="S"
+                                       Checked="BtnSelect_Checked" ToolTip="Select Shape"/>
+                    <RibbonButton x:Name="BtnCut" SmallImageSource="Resource\btnCut.png" Label="Cut" KeyTip="X" Click="BtnCut_OnClick" ToolTip="Cut"/>
+                    <RibbonButton x:Name="BtnCopy" SmallImageSource="Resource\btnCopy.png" Label="Copy" KeyTip="C" Click="BtnCopy_OnClick" ToolTip="Copy"/>
+                    <RibbonButton x:Name="BtnPaste" SmallImageSource="Resource\btnPaste.png" Label="Paste" KeyTip="P" Click="BtnPaste_OnClick" ToolTip="Paste"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="ShapeGroup" Header="Shape">
+                    <RibbonRadioButton GroupName="modeDraw" 
+                                       LargeImageSource="Resource/btnLine.png" 
+                                       Label="Line"
+                                       IsChecked="True"
+                                       Checked="BtnDrawLine_OnChecked" ToolTip="Draw Line"/>
+                    <RibbonRadioButton GroupName="modeDraw" 
+                                       LargeImageSource="Resource/btnRectangleStroked.png" 
+                                       Label="Rectangle"
+                                       Checked="BtnDrawRectangle_OnChecked" ToolTip="Draw a rectangle or square"/>
+                    <RibbonRadioButton GroupName="modeDraw" 
+                                       LargeImageSource="Resource/btnRectangle.png" 
+                                       Label="Fill Rectangle"
+                                       Checked="BtnFillRectangle_OnChecked" ToolTip="Draw a filled rectangle or square"/>
+                    <RibbonRadioButton GroupName="modeDraw" 
+                                       LargeImageSource="Resource/btnEllipseStroked.png" 
+                                       Label="Ellipse"
+                                       Checked="BtnDrawEllipse_OnChecked" ToolTip="Draw  ellipse or circle"/>
+                    <RibbonRadioButton GroupName="modeDraw" 
+                                       LargeImageSource="Resource/btnEllipse.png" 
+                                       Label="Fill Ellipse"
+                                       Checked="BtnFillEllipse_OnChecked" ToolTip="Draw a filled ellipse or circle"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="StyleGroup" Header="Style">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0" Content="Size" 
+                               HorizontalContentAlignment="Center" 
+                               VerticalContentAlignment="Center"/>
+                        <ComboBox x:Name="SizeBox" Grid.Column="1" Grid.Row="0" Margin="2,2,2,2" HorizontalContentAlignment="Center">
+                            <ComboBoxItem IsSelected="True" Selected="SmallSize_OnSelected">
+                                <Image Source="Resource/Size3.png"/></ComboBoxItem>
+                            <ComboBoxItem Selected="MediumSize_OnSelected">
+                                <Image Source="Resource/Size6.png"/></ComboBoxItem>
+                            <ComboBoxItem Selected="LargeSize_OnSelected">
+                                <Image Source="Resource/Size9.png"/></ComboBoxItem>
+                            <ComboBoxItem Selected="VeryLargeSize_OnSelected">
+                                <Image Source="Resource/Size12.png"></Image></ComboBoxItem>
+                        </ComboBox>
+                        <Label Grid.Column="0" Grid.Row="1" Content="Style" 
+                               HorizontalContentAlignment="Center" 
+                               VerticalContentAlignment="Center"/>
+                        <ComboBox x:Name="StyleBox" HorizontalContentAlignment="Center" 
+                                  VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" 
+                                  ToolTip="Change style brush" Margin="2,2,2,2">
+                            <ComboBoxItem x:Name="Solid" IsSelected="True" Selected="Solid_OnSelected">
+                                <Image Source="Resource/solidLine.png"></Image>
+                            </ComboBoxItem>
+                            <ComboBoxItem x:Name="Dash" Selected="Dash_OnSelected">
+                                <Image Source="Resource/dashLine.png"></Image>
+                            </ComboBoxItem>
+                            <ComboBoxItem x:Name="DashDot" Selected="DashDot_OnSelected">
+                                <Image Source="Resource/dashdotLine.png"></Image>
+                            </ComboBoxItem>
+                            <ComboBoxItem x:Name="DashDotDot" Selected="DashDotDot_OnSelected">
+                                <Image Source="Resource/dashdotdotLine.png"></Image>
+                            </ComboBoxItem>
+                            <ComboBoxItem x:Name="Dot" Selected="Dot_OnSelected">
+                                <Image Source="Resource/dotLine.png"></Image>
+                            </ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                </RibbonGroup>
+                <RibbonGroup Header="Color">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"></ColumnDefinition>
+                            <ColumnDefinition Width="50"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                            </Grid.RowDefinitions>
+                        <RibbonRadioButton x:Name="BtnColor1" Grid.Column="0" Grid.Row="0" Background="Black" Margin="2,2,2,2" 
+                                      MouseOverBackground="Black" PressedBackground="Black" CheckedBackground="Black" IsChecked="True" Checked="BtnColor_OnChecked"/>
+                        <RibbonRadioButton x:Name="BtnColor2" Grid.Column="1" Grid.Row="0" Background="Red" Margin="2,2,2,2" 
+                                      MouseOverBackground="Red" PressedBackground="Red" CheckedBackground="Red" Checked="BtnColor_OnChecked"/>
+                        <RibbonButton x:Name="BtnChooseColor1" Margin="2,2,2,2" Grid.Column="0" Grid.Row="1" Label="Color 1" Click="BtnChooseColor1_OnClick"/>
+                        <RibbonButton x:Name="BtnChooseColor2" Margin="2,2,2,2" Grid.Column="1" Grid.Row="1" Label="Color 2" Click="BtnChooseColor2_OnClick"/>
+                    </Grid>
+                </RibbonGroup>
+                <RibbonGroup x:Name="Tool" Header="Tool">
+                    <RibbonMenuButton LargeImageSource="Resource/btnCustomShape.png" Label="Insert ...">
+                        <RibbonMenuItem x:Name="BtnArrow" ImageSource="Resource/btnArrow.png"
+                                        Header="Arrow"  Click="BtnDrawArrow_OnChecked"></RibbonMenuItem>
+                        <RibbonMenuItem x:Name="BtnArrowDown" ImageSource="Resource/btnArrowDown.png"
+                                        Header="Arrow 2"  Click="BtnArrowDown_OnClick"></RibbonMenuItem>
+                        <RibbonMenuItem x:Name="BtnTriangle" ImageSource="Resource/btnTriangle.png"
+                                        Header="Triangle" Click="BtnTriangle_OnClick"></RibbonMenuItem>
+                        <RibbonMenuItem x:Name="BtnDiamond" ImageSource="Resource/btnDiamond.png"
+                                        Header="Diamond" Click="BtnDrawDiamond_OnChecked"></RibbonMenuItem>
+                        <RibbonMenuItem x:Name="BtnStar" ImageSource="Resource/btnStar.png"
+                                        Header="Star" Click="BtnStar_OnClick"></RibbonMenuItem>
+                        <RibbonMenuItem x:Name="BtnInsertIamge" ImageSource="Resource/btnImage.png"
+                                        Header="From Image" Click="BtnInsertIamge_OnClick"/>
+                        
+                    </RibbonMenuButton>
+                    <RibbonMenuButton x:Name="BtnFillShape" LargeImageSource="Resource/btnFillShape.png" 
+                                  Label="Fill Shape">
+                        <RibbonMenuItem x:Name="BtnGradient" ImageSource="Resource/btnGradient.png" 
+                                        Header="Gradient" Click="BtnGradient_OnClick"/>
+                        <RibbonMenuItem x:Name="BtnFill" ImageSource="Resource/btnFill.png" Header="Fill"
+                                        Click="BtnFill_OnClick"/>
+                        <RibbonMenuItem x:Name="BtnImage" ImageSource="Resource/btnImage.png" Header="From Image"
+                                        Click="BtnImage_OnClick"/>
+                    </RibbonMenuButton>
+                    <RibbonButton x:Name="BtnBorderColor" LargeImageSource="Resource/btnBorder.png" 
+                                  Label="Border Color" Click="BtnBorderColor_OnClick"/>
+                    <RibbonButton x:Name="BtnDeleteShape" LargeImageSource="Resource/btnDelete.png" 
+                                  Label="Delete Shape" Click="BtnDeleteShape_OnClick"/>
+                    <RibbonButton x:Name="BtnRotateLeft" LargeImageSource="Resource/btnRotateLeft.png"
+                                  Label="Rotate Left" Click="BtnRotateLeft_OnClick"/>
+                    <RibbonButton x:Name="BtnRotateRight" LargeImageSource="Resource/btnRotateRight.png"
+                                  Label="Rotate Right" Click="BtnRotateRight_OnClick"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Network">
+                    <RibbonToggleButton x:Name="BtnConnect" LargeImageSource="Resource/btnConnect.png" Label="Connect"
+                                        Click="BtnConnect_OnClick" Width="80" MouseOverBorderBrush="#FF00FF0C" CheckedBorderBrush="#FF46FF00">
+                        <RibbonToggleButton.PressedBackground>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF96E385" Offset="0"/>
+                                <GradientStop Color="#FF89F498" Offset="0.19"/>
+                                <GradientStop Color="#FF77F58E" Offset="0.36"/>
+                                <GradientStop Color="#FF81F556" Offset="0.363"/>
+                                <GradientStop Color="#FF28B200" Offset="0.786"/>
+                                <GradientStop Color="#FF5BDE00" Offset="1"/>
+                            </LinearGradientBrush>
+                        </RibbonToggleButton.PressedBackground>
+                        <RibbonToggleButton.MouseOverBackground>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FFF4FEF6" Offset="0"/>
+                                <GradientStop Color="#FFCEFDE3" Offset="0.193"/>
+                                <GradientStop Color="#FFC5FDB8" Offset="0.39"/>
+                                <GradientStop Color="#FF6BFFAE" Offset="0.393"/>
+                                <GradientStop Color="#FF32B93F" Offset="0.79"/>
+                                <GradientStop Color="#FF1FB200" Offset="1"/>
+                            </LinearGradientBrush>
+                        </RibbonToggleButton.MouseOverBackground>
+                        <RibbonToggleButton.CheckedBackground>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF86ECA6" Offset="0"/>
+                                <GradientStop Color="#FF5EB67E" Offset="0.18"/>
+                                <GradientStop Color="#FF51C346" Offset="0.39"/>
+                                <GradientStop Color="#FF00FF17" Offset="1"/>
+                            </LinearGradientBrush>
+                        </RibbonToggleButton.CheckedBackground>
+                    </RibbonToggleButton>
+                    <TextBlock Text="Please enter your name:" Margin="5"/>
+                    <RibbonTextBox x:Name="TxtUsername" Label="Name"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Text">
+                <RibbonGroup Header="Tool">
+                    <RibbonRadioButton x:Name="BtnAddText" GroupName="modeDraw" LargeImageSource="Resource/btnText.png" 
+                                  Label="Add text" Click="BtnAddText_OnClick"/>
+                </RibbonGroup>
+                <RibbonGroup>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ComboBox xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase" x:Name="FontChooser"
+                        ItemTemplate="{DynamicResource FontTemplate}"
+                        SelectionChanged="FontChooser_OnSelectionChanged">
+                            <ComboBox.Resources>
+                                <CollectionViewSource x:Key="MyFonts" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
+                                    <CollectionViewSource.SortDescriptions>
+                                        <componentModel:SortDescription PropertyName="Source" />
+                                    </CollectionViewSource.SortDescriptions>
+                                </CollectionViewSource>
+
+                                <Style x:Key="FontStyle">
+                                    <Setter Property="Control.FontFamily" Value="{Binding Source}" />
+                                    <Setter Property="Control.FontSize" Value="16" />
+                                </Style>
+                                <DataTemplate x:Key="FontTemplate">
+                                    <StackPanel VirtualizingStackPanel.IsVirtualizing="True">
+                                        <TextBlock Style="{StaticResource FontStyle}"
+                                        Text="{Binding Source}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.Resources>
+                            <ComboBox.ItemsSource>
+                                <Binding Source="{StaticResource MyFonts}" />
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <xctk:DecimalUpDown x:Name="BtnFontSize" Margin="5,5,5,5" Value="20" ValueChanged="BtnFontSize_OnValueChanged"/>
+                            <RibbonToggleButton Grid.Column="1" x:Name="BtnBold" 
+                                                SmallImageSource="Resource/btnBold.png" Label="Bold"
+                                                Click="BtnBold_OnClick"/>
+                            <RibbonToggleButton Grid.Column="2" x:Name="BtnItalic" Label="Italic"
+                                                SmallImageSource="Resource/btnItalic.png"
+                                                Click="BtnItalic_OnClick"/>
+                            <RibbonToggleButton Grid.Column="3" x:Name="BtnUnderline"  Label="Underline"
+                                                SmallImageSource="Resource/btnUnderline.png"
+                                                Click="BtnUnderline_OnClick"/>
+                        </Grid>
+                    </Grid>  
+                </RibbonGroup>
+                <RibbonGroup>
+                    <RibbonButton x:Name="BtnColorText" LargeImageSource="Resource/btnTextColor.png" 
+                                  Label="Text Color" Foreground="Black"
+                                  FontWeight="Black" Click="BtnColorText_OnClick"/>
+                    <RibbonButton x:Name="BtnBackgroudText" LargeImageSource="Resource/btnFill.png" 
+                                  Label="Background" Foreground="Black"
+                                  FontWeight="Black" Click="BtnBackgroudText_OnClick"/>
+                </RibbonGroup>
+                
+            </RibbonTab>
+        </Ribbon>
+            <Grid Grid.Row="1" Background="DarkGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Canvas x:Name ="MyCanvas" Grid.Column="0"
+                    Background="White"
+                    PreviewMouseLeftButtonDown="MyCanvas_OnPreviewMouseLeftButtonDown" 
+                    PreviewMouseLeftButtonUp="MyCanvas_OnPreviewMouseLeftButtonUp"
+                    MouseMove="MyCanvas_OnMouseMove" 
+                    ClipToBounds="true" HorizontalAlignment="Left" Width="750" Height="400" 
+                    VerticalAlignment="Top"/>
+                </Grid>
+            </ScrollViewer>
+            <Grid Grid.Column="1" Width="250">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="#FF2980B9">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="35"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="Resource/icoUserGroup.png" Margin="5"/>
+                        <Label Grid.Column="1"  Height="30" Content="Friends" Foreground="AntiqueWhite" Margin="5,0,0,0"/>
+                    </Grid>
+                    <ListBox x:Name="ListFriends" Grid.Row="1" BorderBrush="#FF2980B9"/>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="#FF2980B9">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="35"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="Resource/icoChat.png" Margin="5"/>
+                        <Label Grid.Column="1"  Height="30" Content="Room mới tạo" Foreground="AntiqueWhite" Margin="5,0,0,0"/>
+                        <Button Grid.Column="2" Content="Join room" Background="#FF2980B9" Foreground="AntiqueWhite"  BorderBrush="#FF0E476C"/>
+                    </Grid>
+                    <ListBox x:Name="ListMessage" Grid.Row="1" BorderBrush="#FF2980B9">
+                        <TextBlock Text="please join room for chatting..." FontStyle="Italic" 
+                                   Foreground="DimGray" FontSize="15" TextWrapping="Wrap" Width="240"/>    
+                    </ListBox>
+                    <Grid Grid.Row="2" Height="40">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtMessage" Grid.Column="0" BorderBrush="#FF2980B9" FontSize="16" 
+                                    TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                        <Button Content="Send" Grid.Column="1" Foreground="AliceBlue" Click="Send_OnClick">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="#FF2980B9"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#FF0C4266"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseCaptured" Value="True">
+                                            <Setter Property="Background" Value="#FF042942"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Label x:Name="TipLabel" Grid.Row="2"  Background="BlanchedAlmond"/>
+    </Grid>
+</RibbonWindow>
