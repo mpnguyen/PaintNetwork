@@ -7,7 +7,6 @@ namespace PaintUseCanvas
     public class Network
     {
         const int PORT = 2015;
-        const string LOCALHOST = "localhost";
         TcpClient client;
         Stream remoteStream;
         StreamWriter clientWriter;
@@ -15,8 +14,6 @@ namespace PaintUseCanvas
 
         public bool Connect()
         {
-            // string host = LOCALHOST;
-
             try
             {
                 client = new TcpClient();

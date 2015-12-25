@@ -36,7 +36,6 @@ namespace PaintUseCanvas.Pages
         private void BtnCreate_OnClick(object sender, RoutedEventArgs e)
         {
             CreateRoom(TxtNameRoom.Text);
-            MessageBox.Show("Create room success!");
             DialogResult = true;
             this.Close();
         }
@@ -59,6 +58,25 @@ namespace PaintUseCanvas.Pages
             var room = sender as UCRoom;
             JoinRoom(room.TxtName.Text);
             this.Close();
+        }
+
+        private void BtnSearch_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (TxtNameRoom.Text != "")
+            {
+                foreach (UCRoom room in ListBoxRoom.Items)
+                {
+                    if (room.TxtName.Text != TxtNameRoom.Text)
+                        room.Visibility = Visibility.Hidden;
+                }
+            }
+            else
+            {
+                foreach (UCRoom room in ListBoxRoom.Items)
+                {
+                    room.Visibility = Visibility.Visible;
+                }
+            }
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿<Window x:Class="PaintUseCanvas.Pages.MessageDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MessageDialog" Height="200" Width="500">
+        Title="MessageDialog" Height="150" Width="250">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1.5*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TxtMessage" Text="New message" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="TxtMessage" Text="New message" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                   TextWrapping="Wrap" Width="230" TextAlignment="Center" Margin="5"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

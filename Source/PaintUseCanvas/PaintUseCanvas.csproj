@@ -67,6 +67,9 @@
     <Compile Include="AnchorPoint.cs" />
     <Compile Include="ClientInfo.cs" />
     <Compile Include="MyTextBox.cs" />
+    <Compile Include="Pages\MessageDialog.xaml.cs">
+      <DependentUpon>MessageDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\RoomDialog.xaml.cs">
       <DependentUpon>RoomDialog.xaml</DependentUpon>
     </Compile>
@@ -92,6 +95,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\MessageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\RoomDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

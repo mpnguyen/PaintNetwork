@@ -1180,7 +1180,7 @@ namespace PaintUseCanvas
                 //string nameClient = network.ClientRecieve();
                 string data = network.ClientRecieve();
 
-                var path = data.Split(new string[] {"||"}, StringSplitOptions.None);
+                var path = data.Split(new string[] { "||" }, StringSplitOptions.None);
                 switch (path[0])
                 {
                     case "CH":
@@ -1195,33 +1195,102 @@ namespace PaintUseCanvas
                     case "RQ":
                         RequestJoin(path[1]);
                         break;
+                    case "FAIL":
+                        MessageBox.Show(path[1]);
+                        break;
+                    case "OK":
+                        ProcessOK(path[1], path[2]);
+                        break;
+                    case "IV":
+                        Invite(path[1]);
+                        break;
                 }
 
-                
+            }
+        }
+
+        private void Invite(string s)
+        {
+            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+                var message = new MessageDialog("Do you want to join '" + s + "' room?");
+                var check = message.ShowDialog();
+                if (check == true)
+                    network.ClientSend("AC||" + s);
+            });
+        }
+
+        private void ProcessOK(string path1, string path2)
+        {
+            switch (path1)
+            {
+                case "CN":
+                    //connect thanh cong
+                    break;
+                case "CR":
+                    //Tao room thanh cong
+                    this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+                    {
+                        MessageBox.Show("Create room success");
+                        btnJoin.Content = "Leave Room";
+                        TxtRoomName.Content = path2;
+                        ListMessage.Items.Clear();
+                        _isJoinRoom = true;
+                    });
+                    break;
+                case "JR":
+                    //Join room thanh cong
+                    this.Dispatcher.BeginInvoke((ThreadStart) delegate()
+                    {
+                        btnJoin.Content = "Leave Room";
+                        TxtRoomName.Content = path2;
+                        MessageBox.Show("Join room success");
+                        ListMessage.Items.Clear();
+                        _isJoinRoom = true;
+                    });
+                    
+                    break;
             }
         }
 
         private void RequestJoin(string s)
         {
-            var message = new MessageDialog(s + " want to join your room!");
-            var check = message.ShowDialog();
-            if (check == true)
-                network.ClientSend("RQ||Yes||" + s);
-            else
-                network.ClientSend("RQ||No||" + s);
+            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+                var message = new MessageDialog(s + " want to join your room!");
+                var check = message.ShowDialog();
+                if (check == true)
+                    network.ClientSend("RQ||Yes||" + s);
+                else
+                    network.ClientSend("RQ||No||" + s);
+            });
         }
-
         private void GetClientList(string data)
         {
             _listClient = JsonConvert.DeserializeObject<List<ClientData>>(data);
-            
+            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+                ListFriends.Items.Clear();
+                foreach (var clientData in _listClient)
+                {
+                    if (clientData.Name != TxtUsername.Text)
+                        ListFriends.Items.Add(new TextBlock()
+                        {
+                            Text = clientData.Name,
+                            FontSize = 16,
+                            FontWeight = FontWeights.Bold,
+                            Margin = new Thickness(10,3,3,3)
+                        });
+                }
+            });
+
         }
 
         void GetRoomList(string data)
         {
-            _listRoom = JsonConvert.DeserializeObject<List<RoomData>>(data);   
+            _listRoom = JsonConvert.DeserializeObject<List<RoomData>>(data);
         }
-        
+
         void ChatMessage(string name, string text)
         {
             this.Dispatcher.BeginInvoke((ThreadStart)delegate()
@@ -1236,6 +1305,11 @@ namespace PaintUseCanvas
         }
         private void Send_OnClick(object sender, RoutedEventArgs e)
         {
+            if (_isJoinRoom == false)
+            {
+                MessageBox.Show("Join a room for chatting...");
+                return;
+            }
             network.ClientSend("CH||" + TxtMessage.Text);
             var message = new UserMessage();
             message.SetMessage(TxtMessage.Text);
@@ -1279,31 +1353,43 @@ namespace PaintUseCanvas
                 var roomDialog = new RoomDialog(_listRoom);
                 roomDialog.CreateRoom += CreateRoom;
                 roomDialog.JoinRoom += JoinRoom;
-                var check = roomDialog.ShowDialog();
-                if (check == true)
-                {
-                    btnJoin.Content = "Leave Room";
-                    _isJoinRoom = true;
-                }
+                roomDialog.ShowDialog();
             }
             else
             {
                 network.ClientSend("LR||" + TxtRoomName.Content);
                 btnJoin.Content = "Join Room";
+                ListMessage.Items.Clear();
+                ListMessage.Items.Add(new TextBlock()
+                {
+                    Text="Join room for chatting...",
+                    FontSize = 20,
+                    FontStyle= FontStyles.Italic,
+                    Foreground = Brushes.DimGray
+                });
                 TxtRoomName.Content = "Chat Room";
+                _isJoinRoom = false;
             }
         }
 
         private void JoinRoom(string txtname)
         {
             network.ClientSend("JR||" + txtname);
-            MessageBox.Show("Join room success!");
         }
 
         private void CreateRoom(string txtName)
         {
             network.ClientSend("CR||" + txtName);
-            TxtRoomName.Content = txtName;
+        }
+
+        private void BtnInvite_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (ListFriends.SelectedItem == null)
+                MessageBox.Show("Please select your friend");
+            else
+            {
+                network.ClientSend("IV||" + (ListFriends.SelectedItem as TextBlock).Text);
+            }
         }
     }
 }
