@@ -182,6 +182,9 @@ namespace ServerPaint
                     {
                         roomList.Remove(roomList[i]);
                     }
+
+                    string json2 = CreateListRoom(roomList);
+                    BroadCast("RL||" + json2, listSocketClient, null);
                     return;
                 }
             }
