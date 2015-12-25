@@ -22,9 +22,10 @@ namespace PaintUseCanvas.Pages
     {
         private List<RoomData> _listRoom;
 
-        public delegate void CreateRoomDelegate(string txtName);
+        public delegate void MainWindowHandler(string txtName);
 
-        public CreateRoomDelegate CreateRoom;
+        public MainWindowHandler CreateRoom;
+        public MainWindowHandler JoinRoom;
 
         public RoomDialog(List<RoomData> listRoom)
         {
@@ -36,6 +37,7 @@ namespace PaintUseCanvas.Pages
         {
             CreateRoom(TxtNameRoom.Text);
             MessageBox.Show("Create room success!");
+            DialogResult = true;
             this.Close();
         }
 
@@ -47,8 +49,16 @@ namespace PaintUseCanvas.Pages
                 room.SetName(roomData.Name);
                 room.SetHostname(roomData.Host);
                 room.SetNumber(roomData.Member.Count.ToString());
+                room.MouseDoubleClick += room_MouseDoubleClick;
                 ListBoxRoom.Items.Add(room);
             }
+        }
+
+        void room_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var room = sender as UCRoom;
+            JoinRoom(room.TxtName.Text);
+            this.Close();
         }
     }
 }

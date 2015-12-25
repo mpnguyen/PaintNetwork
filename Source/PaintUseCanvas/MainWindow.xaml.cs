@@ -51,6 +51,7 @@ namespace PaintUseCanvas
             AddText
         }
 
+        private bool _isJoinRoom = false;
         private List<ClientData> _listClient = new List<ClientData>();
         private List<RoomData> _listRoom = new List<RoomData>();
         private Network network = new Network();
@@ -1190,12 +1191,24 @@ namespace PaintUseCanvas
                         break;
                     case "CL":
                         GetClientList(path[1]);
-
+                        break;
+                    case "RQ":
+                        RequestJoin(path[1]);
                         break;
                 }
 
                 
             }
+        }
+
+        private void RequestJoin(string s)
+        {
+            var message = new MessageDialog(s + " want to join your room!");
+            var check = message.ShowDialog();
+            if (check == true)
+                network.ClientSend("RQ||Yes||" + s);
+            else
+                network.ClientSend("RQ||No||" + s);
         }
 
         private void GetClientList(string data)
@@ -1223,7 +1236,7 @@ namespace PaintUseCanvas
         }
         private void Send_OnClick(object sender, RoutedEventArgs e)
         {
-            network.ClientSend(TxtMessage.Text);
+            network.ClientSend("CH||" + TxtMessage.Text);
             var message = new UserMessage();
             message.SetMessage(TxtMessage.Text);
             message.SetName(TxtUsername.Text);
@@ -1261,14 +1274,36 @@ namespace PaintUseCanvas
 
         private void BtnJoin_OnClick(object sender, RoutedEventArgs e)
         {
-            var roomDialog = new RoomDialog(_listRoom);
-            roomDialog.CreateRoom += CreateRoom;
-            roomDialog.ShowDialog();
+            if (_isJoinRoom == false)
+            {
+                var roomDialog = new RoomDialog(_listRoom);
+                roomDialog.CreateRoom += CreateRoom;
+                roomDialog.JoinRoom += JoinRoom;
+                var check = roomDialog.ShowDialog();
+                if (check == true)
+                {
+                    btnJoin.Content = "Leave Room";
+                    _isJoinRoom = true;
+                }
+            }
+            else
+            {
+                network.ClientSend("LR||" + TxtRoomName.Content);
+                btnJoin.Content = "Join Room";
+                TxtRoomName.Content = "Chat Room";
+            }
+        }
+
+        private void JoinRoom(string txtname)
+        {
+            network.ClientSend("JR||" + txtname);
+            MessageBox.Show("Join room success!");
         }
 
         private void CreateRoom(string txtName)
         {
             network.ClientSend("CR||" + txtName);
+            TxtRoomName.Content = txtName;
         }
     }
 }

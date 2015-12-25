@@ -32,7 +32,7 @@ namespace PaintUseCanvas.UserControl
         }
         public void SetName(string name)
         {
-            TxtName.Text = Name;
+            TxtName.Text = name;
         }
     }
 }

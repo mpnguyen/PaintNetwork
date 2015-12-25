@@ -318,7 +318,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0" Source="Resource/icoChat.png" Margin="5"/>
-                        <Label Grid.Column="1"  Height="30" Content="Room mới tạo" Foreground="AntiqueWhite" Margin="5,0,0,0"/>
+                        <Label x:Name="TxtRoomName" Grid.Column="1"  Height="30" Content="Chat room" Foreground="AntiqueWhite" Margin="5,0,0,0"/>
                         <Button x:Name="btnJoin" Grid.Column="2" Content="Join room" Foreground="AntiqueWhite"  
                                 BorderBrush="#FF0E476C" Click="BtnJoin_OnClick">
                             <Button.Style>
