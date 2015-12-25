@@ -95,10 +95,13 @@ namespace ServerPaint
                         break;
 
                     case "IV":
-                        Invite();
+                        Invite(msgPart[1], clientSoc);
                         break;
                     case "RQ":
                         AcceptRequest(msgPart[1], msgPart[2], clientSoc);
+                        break;
+                    case "AC":
+                        AcceptInvite(msgPart[1], clientSoc);
                         break;
                     case "CH":
                         lock (lockRoom)
@@ -119,6 +122,19 @@ namespace ServerPaint
                         break;
                 }
 
+            }
+        }
+
+        private static void AcceptInvite(string roomName, ClientInfo clientSoc)
+        {
+            foreach (var room in roomList)
+            {
+                if (room.name == roomName)
+                {
+                    room.member.Add(clientSoc);
+                    SendMessage("OK||JR||" + room.name, clientSoc);
+                    return;
+                }
             }
         }
 
@@ -164,8 +180,34 @@ namespace ServerPaint
             }
         }
 
-        public static void Invite()
+        public static void Invite(string clientName, ClientInfo client)
         {
+            foreach (var room in roomList)
+            {
+                foreach (var clientInfo in room.member)
+                {
+                    if (clientInfo.name == clientName)
+                    {
+                        return;
+                    }
+                }
+            }
+            foreach (var clientInfo in listSocketClient)
+            {
+                if (clientInfo.name == clientName)
+                {
+                    foreach (var room in roomList)
+                    {
+                        foreach (var info in room.member)
+                        {
+                            if (info == client)
+                            {
+                                SendMessage("IV||"+room.name, clientInfo);
+                            }
+                        }               
+                    }    
+                }
+            }
         }
 
         public static void SendMessage(string msg, ClientInfo client)
