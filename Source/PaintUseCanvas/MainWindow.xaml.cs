@@ -1168,7 +1168,7 @@ namespace PaintUseCanvas
             }
             else
             {
-                network.Disconnect();
+                network.ClientSend("DC||");
                 TxtUsername.IsReadOnly = false;
                 BtnConnect.Label = "Connect";
             }
@@ -1203,6 +1203,10 @@ namespace PaintUseCanvas
                         break;
                     case "IV":
                         Invite(path[1]);
+                        break;
+                    case "DC":
+                        network.Disconnect();
+                        Thread.CurrentThread.Abort();
                         break;
                 }
 
