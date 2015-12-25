@@ -173,10 +173,17 @@ namespace ServerPaint
 
         public static void LeaveRoom(string name, ClientInfo client)
         {
-            foreach (var room in roomList.Where(room => room.name == name))
+            for (int i = 0; i < roomList.Count; i++)
             {
-                room.member.Remove(client);
-                return;
+                if (roomList[i].name == name)
+                {
+                    roomList[i].member.Remove(client);
+                    if (roomList[i].member.Count == 0)
+                    {
+                        roomList.Remove(roomList[i]);
+                    }
+                    return;
+                }
             }
         }
 
