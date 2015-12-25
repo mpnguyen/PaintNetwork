@@ -58,7 +58,7 @@ namespace ServerPaint
             ClientInfo clientSoc = new ClientInfo() { client = socket, name = name };
             if (!IsNameAvailable(clientSoc.name))
             {
-                SendMessage("OK||CN", clientSoc);
+                SendMessage("OK||CN||OK", clientSoc);
                 Thread.CurrentThread.Abort();
             }
             listSocketClient.Add(clientSoc);
@@ -135,7 +135,7 @@ namespace ServerPaint
             Room newRoom = new Room() { host = client, name = name, member = new List<ClientInfo>() };
             newRoom.member.Add(client);
             roomList.Add(newRoom);
-            SendMessage("OK||Room created", client);
+            SendMessage("OK||CR||"+name, client);
             string json = CreateListRoom(roomList);
             BroadCast("RL||" + json, listSocketClient, client);
             SendMessage("RL||" + json, client);
@@ -160,7 +160,6 @@ namespace ServerPaint
             foreach (var room in roomList.Where(room => room.name == name))
             {
                 room.member.Remove(client);
-                SendMessage("", client);
                 return;
             }
         }
