@@ -241,7 +241,7 @@ namespace ServerPaint
                         if (result == "Yes")
                         {
                             room.member.Add(clientInfo);
-                            SendMessage("OK||JR", clientInfo);
+                            SendMessage("OK||JR||"+name, clientInfo);
                             return;
                         }
                         else
