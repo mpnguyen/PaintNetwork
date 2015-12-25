@@ -56,7 +56,17 @@ namespace ServerPaint
 
             string name = clientReader.ReadLine();
             ClientInfo clientSoc = new ClientInfo() { client = socket, name = name };
+            if (!IsNameAvailable(clientSoc.name))
+            {
+                SendMessage("OK||CN", clientSoc);
+                Thread.CurrentThread.Abort();
+            }
             listSocketClient.Add(clientSoc);
+
+            string json = CreateListRoom(roomList);
+            SendMessage("RL||" + json, clientSoc);
+            json = CreateListClient(listSocketClient);
+            BroadCast(json, listSocketClient, null);
 
             while (true)
             {
@@ -87,6 +97,9 @@ namespace ServerPaint
                     case "IV":
                         Invite();
                         break;
+                    case "RQ":
+                        AcceptRequest(msgPart[1], msgPart[2], clientSoc);
+                        break;
                     case "CH":
                         lock (lockRoom)
                         {
@@ -96,7 +109,7 @@ namespace ServerPaint
                                 {
                                     if (clientInfo == clientSoc)
                                     {
-                                        BroadCast("CH||" + msgPart[1], room.member, clientSoc);
+                                        BroadCast("CH||" + clientSoc.name + "||" + msgPart[1], room.member, clientSoc);
                                     }
                                 }
                             }
@@ -105,7 +118,7 @@ namespace ServerPaint
                     default:
                         break;
                 }
-                
+
             }
         }
 
@@ -115,16 +128,17 @@ namespace ServerPaint
             {
                 if (room.name == name)
                 {
-                    SendMessage("fail", client);
+                    SendMessage("FAIL||Cant not create room", client);
                     return;
                 }
             }
-            Room newRoom = new Room() { host = client, name = name, member = new List<ClientInfo>()};
+            Room newRoom = new Room() { host = client, name = name, member = new List<ClientInfo>() };
             newRoom.member.Add(client);
             roomList.Add(newRoom);
-            SendMessage("Server: Success", client);
+            SendMessage("OK||Room created", client);
             string json = CreateListRoom(roomList);
             BroadCast("RL||" + json, listSocketClient, client);
+            SendMessage("RL||" + json, client);
             var listJson = JsonConvert.DeserializeObject<List<RoomData>>(json);
         }
 
@@ -132,11 +146,13 @@ namespace ServerPaint
         {
             foreach (var room in roomList.Where(room => room.name == name))
             {
-                room.member.Add(client);
-                SendMessage("Server: Success", client);
+                //room.member.Add(client);
+                //SendMessage("Server: Success", client);
+                //return;
+                SendMessage("RQ||" + client.name, room.host);
                 return;
             }
-            SendMessage("Server: fail", client);
+            SendMessage("FAIL||Cannot join room", client);
         }
 
         public static void LeaveRoom(string name, ClientInfo client)
@@ -163,9 +179,19 @@ namespace ServerPaint
 
         public static void BroadCast(string msg, List<ClientInfo> clientInfos, ClientInfo sender)
         {
-            foreach (var clientInfo in clientInfos)
+            if (sender != null)
             {
-                if (clientInfo != sender)
+                foreach (var clientInfo in clientInfos)
+                {
+                    if (clientInfo != sender)
+                    {
+                        SendMessage(msg, clientInfo);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var clientInfo in clientInfos)
                 {
                     SendMessage(msg, clientInfo);
                 }
@@ -192,5 +218,39 @@ namespace ServerPaint
             return JsonConvert.SerializeObject(result);
         }
 
+        public static bool IsNameAvailable(string name)
+        {
+            foreach (var clientInfo in listSocketClient)
+            {
+                if (clientInfo.name == name)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static void AcceptRequest(string result, string name, ClientInfo client)
+        {
+            foreach (var room in roomList)
+            {
+                if (room.host == client)
+                {
+                    foreach (var clientInfo in listSocketClient.Where(clientInfo => clientInfo.name == name))
+                    {
+                        if (result == "Yes")
+                        {
+                            room.member.Add(clientInfo);
+                            return;
+                        }
+                        else
+                        {
+                            SendMessage("FAIL||Cant join room", clientInfo);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
