@@ -152,6 +152,7 @@ namespace ServerPaint
                     }
                 }
             }
+            SendMessage("DC||", clientSoc);
             clientSoc.client.Close();
             Thread.CurrentThread.Abort();
         }
