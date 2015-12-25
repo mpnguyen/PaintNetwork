@@ -93,15 +93,29 @@ namespace ServerPaint
                             LeaveRoom(msgPart[1], clientSoc);
                         }
                         break;
-
                     case "IV":
-                        Invite(msgPart[1], clientSoc);
+                        lock (lockRoom)
+                        {
+                            Invite(msgPart[1], clientSoc);
+                        }
                         break;
                     case "RQ":
-                        AcceptRequest(msgPart[1], msgPart[2], clientSoc);
+                        lock (lockRoom)
+                        {
+                            AcceptRequest(msgPart[1], msgPart[2], clientSoc);
+                        }
                         break;
                     case "AC":
-                        AcceptInvite(msgPart[1], clientSoc);
+                        lock (lockRoom)
+                        {
+                            AcceptInvite(msgPart[1], clientSoc);
+                        }
+                        break;
+                    case "DC":
+                        lock (lockRoom)
+                        {
+                            Disconnect(clientSoc);
+                        }
                         break;
                     case "CH":
                         lock (lockRoom)
@@ -123,6 +137,23 @@ namespace ServerPaint
                 }
 
             }
+        }
+
+        private static void Disconnect(ClientInfo clientSoc)
+        {
+            listSocketClient.Remove(clientSoc);
+            foreach (var room in roomList)
+            {
+                foreach (var clientInfo in room.member)
+                {
+                    if (clientInfo == clientSoc)
+                    {
+                        room.member.Remove(clientSoc);
+                    }
+                }
+            }
+            clientSoc.client.Close();
+            Thread.CurrentThread.Abort();
         }
 
         private static void AcceptInvite(string roomName, ClientInfo clientSoc)
@@ -151,7 +182,7 @@ namespace ServerPaint
             Room newRoom = new Room() { host = client, name = name, member = new List<ClientInfo>() };
             newRoom.member.Add(client);
             roomList.Add(newRoom);
-            SendMessage("OK||CR||"+name, client);
+            SendMessage("OK||CR||" + name, client);
             string json = CreateListRoom(roomList);
             BroadCast("RL||" + json, listSocketClient, client);
             SendMessage("RL||" + json, client);
@@ -212,10 +243,10 @@ namespace ServerPaint
                         {
                             if (info == client)
                             {
-                                SendMessage("IV||"+room.name, clientInfo);
+                                SendMessage("IV||" + room.name, clientInfo);
                             }
-                        }               
-                    }    
+                        }
+                    }
                 }
             }
         }
@@ -292,7 +323,7 @@ namespace ServerPaint
                         if (result == "Yes")
                         {
                             room.member.Add(clientInfo);
-                            SendMessage("OK||JR||"+room.name, clientInfo);
+                            SendMessage("OK||JR||" + room.name, clientInfo);
                             return;
                         }
                         else
