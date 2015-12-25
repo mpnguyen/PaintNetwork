@@ -66,7 +66,7 @@ namespace ServerPaint
             string json = CreateListRoom(roomList);
             SendMessage("RL||" + json, clientSoc);
             json = CreateListClient(listSocketClient);
-            BroadCast(json, listSocketClient, null);
+            BroadCast("CL||" + json, listSocketClient, null);
 
             while (true)
             {
@@ -240,7 +240,7 @@ namespace ServerPaint
                         if (result == "Yes")
                         {
                             room.member.Add(clientInfo);
-                            SendMessage("OK||JR||"+name, clientInfo);
+                            SendMessage("OK||JR||"+room.name, clientInfo);
                             return;
                         }
                         else
