@@ -121,7 +121,19 @@ namespace ServerPaint
                     case "CV":
                         lock (lockBroadcast)
                         {
-                            BroadCast("CV||" + msgPart[1], listSocketClient, null);
+                            lock (lockRoom)
+                            {
+                                foreach (var room in roomList)
+                                {
+                                    foreach (var clientInfo in room.member)
+                                    {
+                                        if (clientInfo == clientSoc)
+                                        {
+                                            BroadCast("CV||" + msgPart[1], room.member, null);
+                                        }
+                                    }
+                                }
+                            }
                         }
                         break;
                     case "CH":
