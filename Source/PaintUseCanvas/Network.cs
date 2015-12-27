@@ -19,7 +19,7 @@ namespace PaintUseCanvas
                 client = new TcpClient();
                 client.Connect("192.168.11.23", PORT);
             }
-            catch (Exception)
+            catch 
             {
                 return false;
             }

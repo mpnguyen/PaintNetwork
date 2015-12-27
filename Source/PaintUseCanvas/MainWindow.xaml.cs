@@ -51,6 +51,7 @@ namespace PaintUseCanvas
             AddText
         }
 
+
         private bool _isJoinRoom = false;
         private List<ClientData> _listClient = new List<ClientData>();
         private List<RoomData> _listRoom = new List<RoomData>();
@@ -76,6 +77,7 @@ namespace PaintUseCanvas
         public static bool IsDragging;
         public static List<Canvas> UndoList = new List<Canvas>();
         private readonly List<Canvas> _redoList = new List<Canvas>();
+        static object lockCanvas = new Object();
 
         public MainWindow()
         {
@@ -274,8 +276,12 @@ namespace PaintUseCanvas
 
         private void SendCanvasToServer()
         {
-            var canvasString = XamlWriter.Save(MyCanvas);
-            network.ClientSend("CV||" + canvasString);
+            
+            lock (lockCanvas)
+            {
+                var canvasString = XamlWriter.Save(MyCanvas);
+                network.ClientSend("CV||" + canvasString);
+            }
         }
 
         //Event size change to add undo list
@@ -1188,11 +1194,9 @@ namespace PaintUseCanvas
                     BtnConnect.IsChecked = false;
                     return;
                 }
-                TxtUsername.IsReadOnly = true;
-                BtnConnect.Label = "Disconnect";
                 if (network.Connect())
                 {
-                    MessageBox.Show("Connected!");
+                    //MessageBox.Show("Connected!");
                     network.ClientSend(TxtUsername.Text);
                     new Thread(Recevice).Start();
                 }
@@ -1201,8 +1205,8 @@ namespace PaintUseCanvas
                     MessageBox.Show("Connect fail!");
                     TxtUsername.IsReadOnly = false;
                     BtnConnect.Label = "Connect";
-                    BtnConnect.IsChecked = false;
                 }
+                BtnConnect.IsChecked = false;
             }
             else
             {
@@ -1234,6 +1238,13 @@ namespace PaintUseCanvas
                         RequestJoin(path[1]);
                         break;
                     case "FAIL":
+                        if (path[1] == "CN")
+                        {
+                            network.Disconnect();
+                            MessageBox.Show(path[2]);
+                            Thread.CurrentThread.Abort();
+                            break;
+                        }                            
                         MessageBox.Show(path[1]);
                         break;
                     case "OK":
@@ -1262,10 +1273,13 @@ namespace PaintUseCanvas
                 var xmlReader = XmlReader.Create(stringReader, new XmlReaderSettings());
                 var newCanvas = (Canvas)XamlReader.Load(xmlReader);
 
-                MyCanvas.Children.Clear();
-                foreach (var child in newCanvas.Children)
+                lock (lockCanvas)
                 {
-                    MyCanvas.Children.Add(CloneElement(child as UIElement));
+                    MyCanvas.Children.Clear();
+                    foreach (var child in newCanvas.Children)
+                    {
+                        MyCanvas.Children.Add(CloneElement(child as UIElement));
+                    }
                 }
             });
             
@@ -1288,6 +1302,13 @@ namespace PaintUseCanvas
             {
                 case "CN":
                     //connect thanh cong
+                    this.Dispatcher.BeginInvoke((ThreadStart) delegate()
+                    {
+                        TxtUsername.IsReadOnly = true;
+                        BtnConnect.Label = "Disconnect";
+                        BtnConnect.IsChecked = true;
+                        MessageBox.Show(path2);
+                    });
                     break;
                 case "CR":
                     //Tao room thanh cong
