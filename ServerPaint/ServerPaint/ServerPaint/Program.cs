@@ -41,7 +41,6 @@ namespace ServerPaint
             {
                 Socket socket = listener.AcceptSocket();
 
-                Console.WriteLine(socket.RemoteEndPoint + " Connected");
                 Thread th = new Thread((obj) =>
                 {
                     ProvideService((Socket)obj);
@@ -61,9 +60,13 @@ namespace ServerPaint
             if (!IsNameAvailable(clientSoc.name))
             {
                 SendMessage("FAIL||Name not available", clientSoc);
+                clientSoc.client.Close();
                 Thread.CurrentThread.Abort();
+                return;
             }
             listSocketClient.Add(clientSoc);
+            SendMessage("OK||CN||Connected", clientSoc);
+            Console.WriteLine(socket.RemoteEndPoint + " Connected");
 
             string json = CreateListRoom(roomList);
             SendMessage("RL||" + json, clientSoc);
