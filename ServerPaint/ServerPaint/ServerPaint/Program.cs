@@ -22,7 +22,8 @@ namespace ServerPaint
 
         static object lockRoom = new Object();
         static List<Room> roomList = new List<Room>();
-        static object lockBroadcast = new Object();
+        static object lockCanvas = new Object();
+        static string canvas = string.Empty;
 
         static void Main(string[] args)
         {
@@ -119,7 +120,7 @@ namespace ServerPaint
                         }
                         break;
                     case "CV":
-                        lock (lockBroadcast)
+                        lock (lockCanvas)
                         {
                             lock (lockRoom)
                             {
@@ -217,6 +218,10 @@ namespace ServerPaint
                 //SendMessage("Server: Success", client);
                 //return;
                 SendMessage("RQ||" + client.name, room.host);
+                lock (lockCanvas)
+                {
+                    SendMessage("CV||" + canvas, client);
+                }
                 return;
             }
             SendMessage("FAIL||Cannot join room", client);
