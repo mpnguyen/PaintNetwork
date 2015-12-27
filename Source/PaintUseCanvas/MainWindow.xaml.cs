@@ -588,7 +588,7 @@ namespace PaintUseCanvas
             Canvas.SetTop(rectImage, 0);
             Canvas.SetLeft(rectImage, 0);
             MyCanvas.Children.Add(rectImage);
-            SendCanvasToServer();
+            //SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -1068,7 +1068,7 @@ namespace PaintUseCanvas
             shape.Stroke = null;
             var image = new Image { Source = new BitmapImage(new Uri(openFileDialog.FileName)) };
             shape.Fill = new ImageBrush(image.Source);
-            SendCanvasToServer();
+            //SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -1174,7 +1174,7 @@ namespace PaintUseCanvas
             Canvas.SetTop(rectImage, 0);
             Canvas.SetLeft(rectImage, 0);
             MyCanvas.Children.Add(rectImage);
-            SendCanvasToServer();
+            //SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
         //========================================================================================================
