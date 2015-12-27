@@ -22,6 +22,7 @@ namespace ServerPaint
 
         static object lockRoom = new Object();
         static List<Room> roomList = new List<Room>();
+        static object lockBroadcast = new Object();
 
         static void Main(string[] args)
         {
@@ -115,6 +116,12 @@ namespace ServerPaint
                         lock (lockRoom)
                         {
                             Disconnect(clientSoc);
+                        }
+                        break;
+                    case "CV":
+                        lock (lockBroadcast)
+                        {
+                            BroadCast("CV||" + msgPart[1], listSocketClient, null);
                         }
                         break;
                     case "CH":
