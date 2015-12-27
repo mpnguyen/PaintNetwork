@@ -351,7 +351,7 @@ namespace ServerPaint
                             room.member.Add(clientInfo);
                             lock (lockCanvas)
                             {
-                                SendMessage("CV||" + canvas, client);
+                                SendMessage("CV||" + canvas, clientInfo);
                             }
                             SendMessage("OK||JR||" + room.name, clientInfo);
                             return;
