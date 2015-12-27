@@ -31,7 +31,7 @@ namespace ServerPaint
             //  IPHostEntry hostDnsEntry = Dns.GetHostEntry(host);
             //  IPAddress serverIp = hostDnsEntry.AddressList[0];
 
-            IPAddress serverIp = IPAddress.Parse("127.0.0.1");
+            IPAddress serverIp = IPAddress.Parse("192.168.11.23");
             listener = new TcpListener(serverIp, PORT);
             listener.Start();
 
@@ -130,7 +130,8 @@ namespace ServerPaint
                                     {
                                         if (clientInfo == clientSoc)
                                         {
-                                            BroadCast("CV||" + msgPart[1], room.member, null);
+                                            canvas = msgPart[1];
+                                            BroadCast("CV||" + canvas, room.member, null);
                                         }
                                     }
                                 }
@@ -184,6 +185,10 @@ namespace ServerPaint
                 if (room.name == roomName)
                 {
                     room.member.Add(clientSoc);
+                    lock (lockCanvas)
+                    {
+                        SendMessage("CV||" + canvas, clientSoc);
+                    }
                     SendMessage("OK||JR||" + room.name, clientSoc);
                     return;
                 }
@@ -218,10 +223,6 @@ namespace ServerPaint
                 //SendMessage("Server: Success", client);
                 //return;
                 SendMessage("RQ||" + client.name, room.host);
-                lock (lockCanvas)
-                {
-                    SendMessage("CV||" + canvas, client);
-                }
                 return;
             }
             SendMessage("FAIL||Cannot join room", client);
@@ -348,6 +349,10 @@ namespace ServerPaint
                         if (result == "Yes")
                         {
                             room.member.Add(clientInfo);
+                            lock (lockCanvas)
+                            {
+                                SendMessage("CV||" + canvas, client);
+                            }
                             SendMessage("OK||JR||" + room.name, clientInfo);
                             return;
                         }
