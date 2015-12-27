@@ -230,6 +230,7 @@ namespace PaintUseCanvas
                             BtnSelect.IsChecked = true;
                         }
                         MyCanvas.ReleaseMouseCapture();
+                        SendCanvasToServer();
                         UndoList.Add(CloneElement(MyCanvas) as Canvas);
                     }
                     _isDown = false;
@@ -238,9 +239,11 @@ namespace PaintUseCanvas
                     break;
                 case ModeDraw.Select:
                     if (_isShapeMoved)
+                        SendCanvasToServer();
                         UndoList.Add(CloneElement(MyCanvas) as Canvas);
                     if (_isSizeChange)
                     {
+                        SendCanvasToServer();
                         UndoList.Add(CloneElement(MyCanvas) as Canvas);
                         _isSizeChange = false;
                     }
@@ -267,6 +270,12 @@ namespace PaintUseCanvas
                     MyCanvas.ReleaseMouseCapture();
                     break;
             }
+        }
+
+        private void SendCanvasToServer()
+        {
+            var canvasString = XamlWriter.Save(MyCanvas);
+            network.ClientSend("CV||" + canvasString);
         }
 
         //Event size change to add undo list
@@ -331,6 +340,7 @@ namespace PaintUseCanvas
                 var shape = _selectedElement as Shape;
 
                 if (shape != null) shape.StrokeThickness = 3;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -342,6 +352,7 @@ namespace PaintUseCanvas
             {
                 var shape = _selectedElement as Shape;
                 if (shape != null) shape.StrokeThickness = 6;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -354,6 +365,7 @@ namespace PaintUseCanvas
             {
                 var shape = _selectedElement as Shape;
                 if (shape != null) shape.StrokeThickness = 9;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -365,6 +377,7 @@ namespace PaintUseCanvas
             {
                 var shape = _selectedElement as Shape;
                 if (shape != null) shape.StrokeThickness = 12;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -387,6 +400,7 @@ namespace PaintUseCanvas
                 var shape = _selectedElement as Shape;
                 if (shape == null) return;
                 shape.StrokeDashArray = null;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -399,6 +413,7 @@ namespace PaintUseCanvas
                 var shape = _selectedElement as Shape;
                 if (shape == null) return;
                 shape.StrokeDashArray = new DoubleCollection { 4, 1 };
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -410,6 +425,7 @@ namespace PaintUseCanvas
             var shape = _selectedElement as Shape;
             if (shape == null) return;
             shape.StrokeDashArray = new DoubleCollection { 1 };
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -420,6 +436,7 @@ namespace PaintUseCanvas
             var shape = _selectedElement as Shape;
             if (shape == null) return;
             shape.StrokeDashArray = new DoubleCollection { 4, 1, 1, 1 };
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -430,6 +447,7 @@ namespace PaintUseCanvas
             var shape = _selectedElement as Shape;
             if (shape == null) return;
             shape.StrokeDashArray = new DoubleCollection { 4, 1, 1, 1, 1, 1 };
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -463,6 +481,7 @@ namespace PaintUseCanvas
                 FocusManager.SetFocusedElement(scope, parent);
                 if (!textBox.IsKeyboardFocused)
                 {
+                    SendCanvasToServer();
                     UndoList.Add(CloneElement(MyCanvas) as Canvas);
                 }
             }
@@ -569,6 +588,7 @@ namespace PaintUseCanvas
             Canvas.SetTop(rectImage, 0);
             Canvas.SetLeft(rectImage, 0);
             MyCanvas.Children.Add(rectImage);
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -585,6 +605,7 @@ namespace PaintUseCanvas
             _selectedElement = null;
             _clipboardElement = null;
             UndoList.Clear();
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -691,6 +712,7 @@ namespace PaintUseCanvas
             Canvas.SetTop(newShape, Canvas.GetTop(shape) + 30);
             Canvas.SetLeft(newShape, Canvas.GetLeft(shape) + 30);
             MyCanvas.Children.Add(newShape);
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -704,6 +726,7 @@ namespace PaintUseCanvas
             }
             MyCanvas.Children.Remove(_selectedElement);
             _selectedElement = null;
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -724,6 +747,7 @@ namespace PaintUseCanvas
             if (textBox != null)
             {
                 textBox.FontFamily = FontChooser.SelectedValue as FontFamily;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -736,6 +760,7 @@ namespace PaintUseCanvas
             if (textBox != null)
             {
                 textBox.FontWeight = BtnBold.IsChecked == true ? FontWeights.Bold : FontWeights.Normal;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -748,6 +773,7 @@ namespace PaintUseCanvas
             if (textBox != null)
             {
                 textBox.FontStyle = BtnItalic.IsChecked == true ? FontStyles.Italic : FontStyles.Normal;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -760,6 +786,7 @@ namespace PaintUseCanvas
             if (textBox != null)
             {
                 textBox.TextDecorations = BtnUnderline.IsChecked == true ? TextDecorations.Underline : null;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -775,6 +802,7 @@ namespace PaintUseCanvas
                 if (textBox != null)
                 {
                     textBox.FontSize = size;
+                    SendCanvasToServer();
                     UndoList.Add(CloneElement(MyCanvas) as Canvas);
                 }
                 _myTextBox.FontSize = size;
@@ -784,6 +812,7 @@ namespace PaintUseCanvas
                 if (textBox != null)
                 {
                     textBox.FontSize = 16;
+                    SendCanvasToServer();
                     UndoList.Add(CloneElement(MyCanvas) as Canvas);
                 }
                 _myTextBox.FontSize = 16;
@@ -803,6 +832,7 @@ namespace PaintUseCanvas
             if (textBox != null)
             {
                 textBox.Foreground = BtnColorText.Foreground;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
             _myTextBox.Color = (SolidColorBrush)BtnColorText.Foreground;
@@ -821,6 +851,7 @@ namespace PaintUseCanvas
             if (textBox != null)
             {
                 textBox.Background = BtnBackgroudText.Foreground;
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -852,6 +883,7 @@ namespace PaintUseCanvas
                 shape.Width = temp;
                 Canvas.SetTop(shape, newtop);
                 Canvas.SetLeft(shape, newleft);
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -879,6 +911,7 @@ namespace PaintUseCanvas
                 shape.Width = temp;
                 Canvas.SetTop(shape, newtop);
                 Canvas.SetLeft(shape, newleft);
+                SendCanvasToServer();
                 UndoList.Add(CloneElement(MyCanvas) as Canvas);
             }
         }
@@ -914,6 +947,7 @@ namespace PaintUseCanvas
                     MyCanvas.Children.Add(CloneElement(child as UIElement));
                 }
             }
+            SendCanvasToServer();
             _selectedElement = null;
             _clipboardElement = null;
 
@@ -938,6 +972,7 @@ namespace PaintUseCanvas
             _redoList.RemoveAt(_redoList.Count - 1);
             _selectedElement = null;
             _clipboardElement = null;
+            SendCanvasToServer();
         }
 
 
@@ -992,6 +1027,7 @@ namespace PaintUseCanvas
                     shape.Fill = new LinearGradientBrush(solidColorBrush.Color,
                         colorBrush.Color, new Point(0, 0), new Point(1, 1));
             }
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -1007,6 +1043,7 @@ namespace PaintUseCanvas
 
             shape.Fill = BtnColor1.IsChecked == true ? BtnColor1.Background : BtnColor2.Background;
             shape.Stroke = shape.Fill;
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -1031,7 +1068,7 @@ namespace PaintUseCanvas
             shape.Stroke = null;
             var image = new Image { Source = new BitmapImage(new Uri(openFileDialog.FileName)) };
             shape.Fill = new ImageBrush(image.Source);
-
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
 
@@ -1137,6 +1174,7 @@ namespace PaintUseCanvas
             Canvas.SetTop(rectImage, 0);
             Canvas.SetLeft(rectImage, 0);
             MyCanvas.Children.Add(rectImage);
+            SendCanvasToServer();
             UndoList.Add(CloneElement(MyCanvas) as Canvas);
         }
         //========================================================================================================
@@ -1204,6 +1242,9 @@ namespace PaintUseCanvas
                     case "IV":
                         Invite(path[1]);
                         break;
+                    case "CV":
+                        LoadCanvas(path[1]);
+                        break;
                     case "DC":
                         network.Disconnect();
                         Thread.CurrentThread.Abort();
@@ -1211,6 +1252,23 @@ namespace PaintUseCanvas
                 }
 
             }
+        }
+
+        private void LoadCanvas(string canvasString)
+        {
+            this.Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+                var stringReader = new StringReader(canvasString);
+                var xmlReader = XmlReader.Create(stringReader, new XmlReaderSettings());
+                var newCanvas = (Canvas)XamlReader.Load(xmlReader);
+
+                MyCanvas.Children.Clear();
+                foreach (var child in newCanvas.Children)
+                {
+                    MyCanvas.Children.Add(CloneElement(child as UIElement));
+                }
+            });
+            
         }
 
         private void Invite(string s)
@@ -1371,6 +1429,7 @@ namespace PaintUseCanvas
                     FontStyle= FontStyles.Italic,
                     Foreground = Brushes.DimGray
                 });
+                MyCanvas.Children.Clear();
                 TxtRoomName.Content = "Chat Room";
                 _isJoinRoom = false;
             }
