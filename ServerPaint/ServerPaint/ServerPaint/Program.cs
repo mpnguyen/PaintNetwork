@@ -59,7 +59,7 @@ namespace ServerPaint
             ClientInfo clientSoc = new ClientInfo() { client = socket, name = name };
             if (!IsNameAvailable(clientSoc.name))
             {
-                SendMessage("FAIL||Name not available", clientSoc);
+                SendMessage("FAIL||CN||Name not available", clientSoc);
                 clientSoc.client.Close();
                 Thread.CurrentThread.Abort();
                 return;
