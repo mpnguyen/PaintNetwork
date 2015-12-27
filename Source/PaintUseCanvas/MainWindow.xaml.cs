@@ -1443,6 +1443,7 @@ namespace PaintUseCanvas
         private void CreateRoom(string txtName)
         {
             network.ClientSend("CR||" + txtName);
+            SendCanvasToServer();
         }
 
         private void BtnInvite_OnClick(object sender, RoutedEventArgs e)
